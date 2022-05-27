@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 struct listagen
 {
@@ -49,4 +50,14 @@ void lgen_verifica(ListaGen *l, void (*cb)(void *))
 void vazia(ListaGen *l, void (*cb)(void *))
 {
     cb(l);
+}
+
+ListaGen *libera(ListaGen *l){
+    ListaGen *w;
+    do{
+         w=l;
+         l=l->prox;
+         free(w->info);
+         free(w);
+    }while(l != NULL);
 }

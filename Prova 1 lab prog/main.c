@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "Funcao.h"
 
 typedef struct aluno
@@ -14,7 +15,7 @@ static ListaGen *insere_aluno(ListaGen *l, int x, char y[50])
 {
     Aluno *p = (Aluno *)malloc(sizeof(Aluno));
     p->matricula = x;
-    p->nome[50] = y;
+    strcpy(p->nome, y);
     return lgen_insere(l, p);
 }
 
@@ -24,38 +25,50 @@ void buscar(void *info, void *dado)
     Aluno *A2 = (Aluno *)dado;
     if (A->matricula == A2->matricula)
     {
-        printf("O aluno existe \n");
-        printf("Nome do aluno: %s\n", A->nome[50]);
+
+        printf("Nome do aluno: %s\n", A->nome);
         printf("Matricula do aluno: %i\n", A->matricula);
     }
-    else
+    /*else
     {
         printf("O aluno nao existe");
-    }
+    }*/
 }
 
 static void imprimir(void *info)
 {
     Aluno *p = (Aluno *)info;
-    printf("%i", p->matricula);
-    printf("%s", p->nome[50]);
+    printf("Matricula: %i\n", p->matricula);
+    printf("Nome: ");
+    puts(p->nome);
 }
 
 void estavazia(void *info)
 {
     if (info == NULL)
     {
-        printf("---Lista vazia---");
+        printf("---Lista vazia---\n");
     }
     else
     {
-        printf("---Lista possui alunos---");
+        printf("---Lista possui alunos---\n");
     }
+}
+
+static void retirar(void *info, int i){
+    Aluno *A = (Aluno *)info;
+
+    if (A->matricula == i){
+        free(A);
+
+    }
+
+
 }
 
 int main()
 {
-    int opcao, m, m1, l;
+    int opcao = 0, m, m1;
     char n[50];
     while (opcao != 6)
     {
@@ -73,19 +86,23 @@ int main()
         case 1:
             printf("Digite a matricula: \n");
             scanf("%i", &m);
+            fflush(stdin);
             printf("Digite o nome: \n");
-            scanf("%s", &n[50]);
-            l = insere_aluno(l, m, n[50]);
+            scanf("%s", &n);
+            fflush(stdin);
+            ponteiro = insere_aluno(ponteiro, m, n);
 
             break;
         case 2:
             printf("Digite a matricula: \n");
             scanf("%i", &m1);
-            busca(l, buscar, &m1);
 
+            busca(ponteiro, buscar, &m1);
+            fflush(stdin);
             break;
         case 3:
             lgen_percorre(ponteiro, imprimir);
+            fflush(stdin);
 
             break;
         case 4:
@@ -93,9 +110,11 @@ int main()
             break;
         case 5:
             vazia(ponteiro, estavazia);
+            fflush(stdin);
             break;
         case 6:
             printf("Saindo...");
+            libera(ponteiro);
             break;
 
         default:
